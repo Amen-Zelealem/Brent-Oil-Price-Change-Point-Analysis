@@ -1,7 +1,7 @@
 import logging
 import os
 import pandas as pd
-from IPython.display import display
+from IPython.display import display, Markdown  
 
 
 class DataPreprocessor:
@@ -88,4 +88,83 @@ class DataPreprocessor:
 
         except Exception as e:
             self.logger.error(f"Error loading data: {e}")
+            raise
+
+
+    def inspect(self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Inspect the given DataFrame for structure, completeness, summary statistics,
+        correlation, and outlier detection.
+
+        Parameters:
+        - df (pd.DataFrame): The DataFrame to inspect.
+
+        Returns:
+        - pd.DataFrame: Summary statistics for numeric columns.
+        """
+        if df.empty:
+            raise ValueError("The DataFrame is empty.")
+
+        try:
+            # Check and display the dimensions of the DataFrame
+            dimensions = df.shape
+            display(Markdown(f"### 📏 **Dimensions (rows, columns):** {dimensions}"))
+            self.logger.info(f"DataFrame dimensions: {dimensions}")
+
+            # Check and display data types of each column
+            data_types = df.dtypes
+            display(Markdown("### 📊 **Data Types:**"))
+            display(data_types)
+            self.logger.info("Displayed data types for each column.")
+
+            # Check for missing values in each column
+            missing_values = df.isnull().sum()
+            display(Markdown("### ❓ **Missing Values:**"))
+            if missing_values.any():
+                display(missing_values[missing_values > 0])
+                self.logger.warning("Missing values found.")
+            else:
+                display(Markdown("**No missing values found. ✅**"))
+                self.logger.info("No missing values detected.")
+
+            # Check and display the count of unique values for each column
+            unique_values = df.nunique()
+            display(Markdown("### 🔍 **Unique Values in Each Column:**"))
+            display(unique_values)
+
+            # Count the number of duplicate rows
+            duplicate_count = df.duplicated().sum()
+            display(Markdown(f"### 🚨 **Number of Duplicate Rows: {duplicate_count}**"))
+            self.logger.info(f"Duplicate rows found: {duplicate_count}")
+
+            # View duplicate rows if any
+            if duplicate_count > 0:
+                duplicates = df[df.duplicated()]
+                display(Markdown("### 🔄 **Duplicate Rows:**"))
+                display(duplicates)
+
+            # Summary statistics for numeric columns
+            summary_statistics = df.describe(include='number')
+            display(Markdown("### 📈 **Summary Statistics for Numeric Columns:**"))
+            display(summary_statistics)
+
+            # Correlation matrix (only for numeric columns)
+            correlation_matrix = df.corr()
+            display(Markdown("### 🔗 **Correlation Matrix:**"))
+            display(correlation_matrix)
+
+            # Outlier detection using IQR for numeric columns only
+            numeric_df = df.select_dtypes(include='number')
+            Q1 = numeric_df.quantile(0.25)
+            Q3 = numeric_df.quantile(0.75)
+            IQR = Q3 - Q1
+            lower_bound = Q1 - 1.5 * IQR
+            upper_bound = Q3 + 1.5 * IQR
+
+            outlier_counts = ((numeric_df < lower_bound) | (numeric_df > upper_bound)).sum()
+            display(Markdown("### 🚫 **Outlier Counts in Each Numeric Column:**"))
+            display(outlier_counts[outlier_counts > 0])
+
+        except Exception as e:
+            self.logger.error(f"An error occurred while inspecting the dataset: {e}")
             raise
