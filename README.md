@@ -22,10 +22,14 @@ This project analyzes Brent oil prices using change point detection and statisti
 +---notebooks
 | ├── init.ipynb
 | ├── Brent_Oil_Price_Change_Point_Analysis
+| ├── Econometric_Analysis.ipynb
+| ├── Oil_Price_Prediction.ipynb
 | └── README.md
 +---scripts
 | ├── init.py
 | ├── data_preprocessing.py
+| ├── data_visualizer.py
+| ├── event_analysis.py
 | └── README.md
 +---src
 | ├── init.py
