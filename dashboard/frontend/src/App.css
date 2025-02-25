@@ -1,0 +1,39 @@
+/* App.css */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  display: flex;
+  min-height: 100vh;
+}
+
+/* App Container */
+.app-container {
+  display: flex;
+  height: 100%;
+}
+
+/* Main Content Styles */
+main {
+  flex: 1;
+  padding: 20px;
+  margin-left: 250px; /* Account for sidebar width */
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Footer Styles */
+footer {
+  text-align: center;
+  padding: 10px;
+  background: #007BFF;
+  color: white;
+  margin-top: auto;
+}
